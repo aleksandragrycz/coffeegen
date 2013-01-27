@@ -1,0 +1,188 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body { 
+  background-image: -webkit-radial-gradient(circle, #3c2719, #3a2619);
+  font-family: Arial;
+  font-size: 14px;
+  text-align: center;
+}
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+
+input {
+  margin-right: 5px;
+}
+
+nav#top img{
+  margin: 43px 188px 0 0;
+}
+
+nav#left img {
+  width: 15px;
+  height: 15px;
+  background-color: green;
+}
+
+div#wrapper {
+  min-height: 500px;
+  width: 1150px;
+  margin: 0 auto;
+  position: relative;
+}
+
+div#content, nav#left {
+  display: inline-block;
+}
+
+div#content {
+  width: 800px;
+  margin-left: 200px;
+}
+
+nav#top {
+  background-image: url('top-bg.jpg');
+  height: 69px;
+  width: 1100px;
+  margin-top: 80px;
+  position: relative;
+}
+
+nav#top div {
+  display: inline-block;
+  color: white;
+}
+
+nav#top div:hover {
+  cursor: pointer;
+}
+
+nav#top div p{
+  padding: 25px;
+  text-shadow: 1px 1px 2px #888;
+}
+
+nav#left ul {
+  list-style-type: none;
+}
+
+nav#left li {
+  text-align: left;
+  margin: 10px 0 0 35px;
+}
+
+nav#left li:last-child{
+  margin-bottom: 30px;
+}
+
+div#logo {
+  background-image: url('logo.png');
+  height: 202px;
+  width: 411px;
+  position: absolute;
+  top: -65px;
+  left: -25px;
+  z-index: 2;
+}
+
+div#blue {
+  background-image: url('blue.png');
+  height: 49px;
+  width: 59px;
+  margin: 22px 50px 0 50px;
+  float: right;
+}
+
+div#orange {
+  background-image: url('green.png');
+  height: 69px;
+  width: 186px;
+  margin: 0 50px;
+  float: right;
+}
+
+div#green {
+  background-image: url('green.png');
+  height: 69px;
+  width: 186px;
+  margin: 0 50px;
+  float: right;
+}
+
+nav#left {
+  background-image: url('left-bg.jpg');
+  width: 238px;
+  min-height: 500px;
+  position: absolute;
+  top: 58px;
+  z-index: 1;
+}
+
+nav#left form p{
+  text-align: left;
+  margin: 5px 0 15px 30px;
+}
+
+div#clean {
+  background-image: url('clean.png');
+  height: 49px;
+  width: 50px;
+  margin: 60px 0 0 199px;
+}
+
+div#clean:hover {
+  cursor: pointer;
+}
+
+div#ing {
+  background-image: url('brown.png');
+  height: 42px;
+  width: 257px;
+  margin: 10px 0 20px -10px;
+}
+
+div#size {
+  background-image: url('brown.png');
+  height: 63px;
+  width: 257px;
+  margin: 20px 0 20px -10px;
+}
+
+div#ing, div#size p{
+  padding-top: 19px;
+  color: white;
+  font-size: 15px;
+  text-shadow: 1px 1px 2px #555;
+}
+
+.image {
+  width: 100px;
+  height: 100px;
+  background-color: white;
+}
+
+table {
+  width: 750px;
+  margin: 70px 0 0 60px;
+  color: #fefefe;
+}
+
+table td {
+  border: 1px solid #705039;
+  background-image: url('table-bg.jpg');
+}
+
+
+
+/* STOPKA */
+footer {
+
+}
+
+
+    

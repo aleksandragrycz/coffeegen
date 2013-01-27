@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <title>CoffeeGen <3</title>
+  <link rel="stylesheet" href="css/main.css" />
+  <script src="jquery.js"></script>
+  <script src="script.js"></script>
+  <script src="module.js"></script>
+  <link rel="icon" href="css/favi.ico" type="favicon.ico" />
+  
+</head>
+<body>
+  
+  <div id="wrapper">
+    <nav id="top">
+      <div id="logo">
+        <img src="css/cog.png" alt="cog" />
+      </div>
+
+      <a href="help.html">
+      <div id="blue"></div>
+      </a>
+
+      <div id="orange">
+      <p> <a href="allcoffees.html">Wszystkie przepisy</a> </p>
+      </div>
+      
+      <div id="green">
+      <p> <a href="poradnik.html">Poradnik baristy</a> </p>
+      </div>
+
+    </nav>
+
+    <nav id="left">
+      <div id="clean"></div>
+      
+      <div id="ing-box">
+      <div id="ing">
+        <p> Składniki</p>
+      </div>
+
+          <ul>
+            <li>
+              <input type="checkbox" checked="checked" disabled="disabled"/>
+              <label>Espresso</label>
+            </li>
+            <li>
+              <input id="hotmilk" type="checkbox" />
+              <label for="hotmilk">Gorące mleko</label>
+            </li>
+
+            <li>
+              <input id="steamedmilk" type="checkbox" />
+              <label for="steamedmilk">Spienione mleko</label>
+            </li>
+
+            <li>
+              <input id="foam" type="checkbox" />
+              <label for="foam">Piana mleczna</label>
+            </li>
+
+            <li>
+              <input id="cream" type="checkbox" />
+              <label for="cream">Bita śmietana</label>
+            </li>
+
+            <li>
+              <input id="hotwater" type="checkbox" />
+              <label for="hotwater">Gorąca woda</label>
+            </li>
+
+            <li>
+              <input id="syrop" type="checkbox" />
+              <label for="syrop">Syrop smakowy</label>
+            </li>
+
+            <li>
+              <input id="chocosyrop" type="checkbox" />
+              <label for="chocosyrop">Syrop czekoladowy</label>
+            </li>
+
+            <li>
+              <input id="icecream" type="checkbox" />
+              <label for="icecream">Lody</label>
+            </li>
+
+            <li>
+              <input id="whisky" type="checkbox" />
+              <label for="whisky">Whisky</label>
+            </li>
+
+            <li>
+              <input id="lemon" type="checkbox" />
+              <label for="lemon">Cytryna</label>
+            </li>
+
+          </ul>
+
+
+      </div>
+
+      <div id="size-box">
+      <div id="size">
+        <p> Pojemność</p>
+      </div>
+        <ul>
+            <li>
+              <input id="90" type="checkbox">
+              <label for="90">90 ml</label>
+            </li>
+
+            <li>
+              <input id="145" type="checkbox">
+              <label for="145">145 ml</label>
+            </li>
+
+            <li>
+              <input id="160" type="checkbox">
+              <label for="160">160 ml</label>
+            </li>
+
+            <li>
+              <input id="250" type="checkbox">
+              <label for="250">250 ml</label>
+            </li>
+        </ul>
+      </div>
+
+    </nav>
+
+    <div id="content">
+      <ul></ul>
+
+      <table>
+
+        <tr>
+          <td><img src="cups/espressocup.png" alt="espresso" /></td>
+          <td>Espresso</td>
+          <td><img src="icons/bean.png" alt="bean" /></td>
+          <td>90ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/espressdoppiocup.png" alt="espressodoppio" /></td>
+          <td>Espresso doppio</td>
+          <td><img src="icons/bean.png" alt="bean" /></td>
+          <td>90ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/espromanocup.png" alt="espressoromano" /></td>
+          <td>Espresso romano</td>
+          <td><img src="icons/bean.png" alt="bean" />
+            <img src="icons/lemon.png" alt="lemon" /></td>
+          <td>90ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/esmachcup.png" alt="espressomacchiato" /></td>
+          <td>Espresso macchiato</td>
+          <td><img src="icons/bean.png" alt="bean" />
+            <img src="icons/foam.png" alt="foam" /></td>
+          <td>90ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/conpannacup.png" alt="espressoconpanna" /></td>
+          <td>Espresso con panna</td>
+          <td><img src="icons/bean.png" alt="bean" />
+            <img src="icons/cream.png" alt="cream" /></td>
+          <td>90ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/affogato.png" alt="espressoaffogato" /></td>
+          <td>Espresso affogato</td>
+          <td><img src="icons/bean.png" alt="bean" />
+            <img src="icons/ice.png" alt="icecream" /></td>
+          <td>90ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/cappuccinocup.png" alt="cappuccino" /></td>
+          <td>Cappuccino</td>
+          <td><img src="icons/bean.png" alt="bean" />
+            <img src="icons/steam.png" alt="steamedmilk" />
+              <img src="icons/foam.png" alt="foam" />
+          </td>
+          <td>145ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/americanocup.png" alt="americano" /></td>
+          <td>Caffe americano</td>
+          <td> <img src="icons/bean.png" alt="bean" />
+            <img src="icons/hotwater.png" alt="water" /> </td>
+          <td>160ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/flatwhitecup.png" alt="flatwhite" /></td>
+          <td>Cafe au lait</td>
+          <td><img src="icons/bean.png" alt="bean" />
+            <img src="icons/hotwater.png" alt="water" />
+              <img src="icons/hotmilk.png" alt="milk" />
+          </td>
+          <td>160ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/lattescup.png" alt="latte" /></td>
+          <td>Latte macchiato</td>
+          <td><img src="icons/bean.png" alt="bean" />
+            <img src="icons/steam.png" alt="steamedmilk" />
+              <img src="icons/foam.png" alt="foam" />
+          </td>
+          <td>250ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/lattesyrupcup.png" alt="latte" /></td>
+          <td>Latte macchiato smakowe</td>
+          <td><img src="icons/bean.png" alt="bean" />
+            <img src="icons/steam.png" alt="steamedmilk" />
+              <img src="icons/foam.png" alt="foam" />
+              <img src="icons/syrup.png" alt="syrop" />
+          </td>
+          <td>250ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/mochal.png" alt="mocha" /></td>
+          <td>Mocha</td>
+          <td><img src="icons/bean.png" alt="bean" />
+            <img src="icons/steam.png" alt="steamedmilk" />
+              <img src="icons/foam.png" alt="foam" />
+              <img src="icons/choco.png" alt="choco" />
+              <img src="icons/cream.png" alt="cream" />
+          </td>
+          <td>250ml</td>
+        </tr>
+
+        <tr>
+          <td><img src="cups/irishcupl.png" alt="irish" /></td>
+          <td>Irish coffee</td>
+          <td><img src="icons/bean.png" alt="bean" />
+            <img src="icons/%.png" alt="whisky" />
+              <img src="icons/cream.png" alt="cream" />
+          </td>
+          <td>250ml</td>
+        </tr>
+
+
+      </table>
+    
+    </div>
+  </div>
+
+  <footer>
+
+  </footer>
+
+
+</body>
+</html>
