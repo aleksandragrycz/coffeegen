@@ -177,7 +177,13 @@ table td {
   background-image: url('table-bg.jpg');
 }
 
+.active {
+  box-shadow: 2px 2px 2px #319b1d;
+}
 
+div#coffees, div#recipies, div#advice, div#help {
+  display: none;
+}
 
 /* STOPKA */
 footer {

@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <title>CoffeeGen <3</title>
   <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/menu.css" />
   <script src="jquery.js"></script>
   <script src="script.js"></script>
   <script src="module.js"></script>
@@ -24,11 +23,11 @@
       </a>
 
       <div id="orange">
-      <p> <a href="allcoffees.html">Wszystkie przepisy</a> </p>
+      <p> <a href='#'>Wszystkie przepisy</a> </p>
       </div>
       
       <div id="green">
-      <p> <a href="poradnik.html">Poradnik baristy</a> </p>
+      <p> <a href="#">Poradnik baristy</a> </p>
       </div>
 
     </nav>
@@ -64,11 +63,6 @@
             <li>
               <input id="cream" type="checkbox" />
               <label for="cream">Bita śmietana</label>
-            </li>
-
-            <li>
-              <input id="hotwater" type="checkbox" />
-              <label for="hotwater">Gorąca woda</label>
             </li>
 
             <li>
@@ -131,7 +125,16 @@
     </nav>
 
     <div id="content">
-      <ul></ul>
+      <div id="coffees">
+        <table></table>
+      </div>
+      <div id="recipies">
+        <table></table>
+      </div>
+      <div id="advice">
+      </div>
+      <div id="help">
+      </div>
     </div>
   </div>
 

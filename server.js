@@ -174,9 +174,15 @@ function serverCallback (request, response) {
     if (addonList.length === 0) 
     {
       query = { 
-        addons: { 
-          $exists: true 
-        } 
+        $or: [
+          {
+            addons: { $exists: false }
+          },
+          {
+            "addons.name": 'hotwater'
+          }
+        ]
+        
       };
     }
     else 

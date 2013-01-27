@@ -1,5 +1,8 @@
 $(document).ready(function () {
 
+  // Wczytujemy podstawowe kawy jak tylko strona się wyświetli.
+  sendCoffeeRequest();
+
   // Najpierw przygotowujemy zmienne przechowujące obiekty jQuery
   // odnoszące się do checkboksów (dodatków do kawy).
   var creamCheckbox = $('#cream');
@@ -8,7 +11,6 @@ $(document).ready(function () {
   var hotMilkCheckbox = $('#hotmilk');
   var steamedMilkCheckbox = $('#steamedmilk');
   var lemonCheckbox = $('#lemon');
-  var hotWaterCheckbox = $('#hotwater');
   var chocoSyropCheckbox = $('#chocosyrop');
   var iceCreamCheckbox = $('#icecream');
   var whiskyCheckbox = $('#whisky');
@@ -18,7 +20,7 @@ $(document).ready(function () {
   // Funkcja wywoływana kiedy użytkownik kliknie w checkboks 
   // dodatku do kawy (np. Bita śmietana).
   function sendCoffeeRequest() {
-
+    $('#coffees').fadeIn();
     // Funkcja, która przyjmuje jako parametr nazwę dodatku,
     // sprawdza czy korespondujący checkbox jest zaznaczony
     // i zwraca true, jeśli jest zaznaczony 
@@ -78,27 +80,95 @@ $(document).ready(function () {
       return li;
     }
 
+
+      function createCoffeeTableElement(coffeeObject) {
+
+      var addons_names = {
+        'foam': 'Piana mleczna',
+        'steamedmilk': 'Spienione mleko',
+        'lemon': 'Cytryna',
+        'chocosyrop': 'Syrop czekoladowy',
+        'syrop': 'Syrop',
+        'cream': 'Bita śmietana',
+        'hotmilk': 'Gorące mleko',
+        'hotwater': 'Gorąca woda',
+        'icecream': 'Lody waniliowe',
+        'whisky': 'Whisky'
+      };
+
+      var p_name = $('<p></p>');
+      p_name.text(coffeeObject['name']);
+
+      var p_capacity = $('<p></p>');
+      p_capacity.text(coffeeObject['capacity'] + ' ml');
+
+      var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + '.png', alt: 'coffee'});
+
+      var td_name = $('<td></td>');
+      var td_capacity = $('<td></td>');
+      var td_img = $('<td></td>');
+
+      //var addonsList = $('<img />', {src: 'icons/' + coffeeObject['addons'] + '.png', alt: 'icon'});
+      var td_addonsList = $('<td></td>');
+      var tr = $('<tr></tr>');
+      var bean_img = $('<img />', {src: 'icons/bean.png', alt: 'ico', title: 'Espresso: ' + coffeeObject['espresso']});
+
+      td_addonsList.append(bean_img);
+       
+      //console.log(coffeeObject);
+      //console.log(coffeeObject['addons']);
+
+      if (coffeeObject['addons']) {
+
+          for (var i=0; i < coffeeObject['addons'].length; i++){
+          var addon_name = coffeeObject['addons'][i].name;
+          console.log(addon_name);
+          var addon_img = $('<img />', {src: 'icons/' + addon_name + '.png', alt: 'ico', title: addons_names[addon_name] + ':  ' + coffeeObject['addons'][i].amount});
+          console.log(addons_names[addon_name]);
+          td_addonsList.append(addon_img);
+          
+      }
+
+
+      
+      //console.log(coffeeObject.addons[i].name);
+      }
+
+
+      td_img.append(img);
+      td_name.append(p_name);
+      td_capacity.append(p_capacity);
+      //td_addonsList.append(addonsList);
+
+      tr.append(td_img);
+      tr.append(td_name);
+      tr.append(td_addonsList);
+      tr.append(td_capacity);
+
+      return tr;
+    }
+
     // Funkcja wykonywana po otrzymaniu odpowiedzi z serwera
     // na żądanie AJAX'owe. Parametr data zawiera dane zwrócone
     // z serwera.
     function gotCoffees(data) {
       // Pobieramy listę kaw otrzymaną z serwera.
-      var coffeeList = data['result'];
+      var coffeeTable = data['result'];
 
       // Lista kaw na stronie.
-      var ul = $('#content ul');
+      var table = $('#coffees table');
 
       // Czyścimy listę kaw na stronie z elementów które tam teraz są.
-      ul.empty();
+      table.empty();
 
       // Dla każdego obiektu kawy tworzymy element listy <li>
       // a następnie dodajemy go do listy na stronie.
-      for (var i = 0; i < coffeeList.length; i++) {
-        var coffee = coffeeList[i];
-        var coffeeListElement = createCoffeeListElement(coffee);
-        coffeeListElement.hide();
-        ul.append(coffeeListElement);
-        coffeeListElement.fadeIn('slow');
+      for (var i = 0; i < coffeeTable.length; i++) {
+        var coffee = coffeeTable[i];
+        var coffeeTableElement = createCoffeeTableElement(coffee);
+        coffeeTableElement.hide();
+        table.append(coffeeTableElement);
+        coffeeTableElement.fadeIn('slow');
       }
 
     }
@@ -113,7 +183,6 @@ $(document).ready(function () {
       syrop: check('syrop'),
       steamedmilk: check('steamedmilk'),
       icecream : check('icecream'),
-      hotwater: check('hotwater'),
       chocosyrop: check('chocosyrop'),
       hotmilk: check('hotmilk'),
       whisky: check('whisky'),
@@ -121,7 +190,7 @@ $(document).ready(function () {
     }
 
     // Wyświetlenie kontrolne w konsoli chrome objektu.
-    console.log(addons);
+    //console.log(addons);
 
     // URL pod który zostanie wysłane zapytanie AJAX'owe
     // z żądaniem zwrócenia kaw odpowiadających danym 
