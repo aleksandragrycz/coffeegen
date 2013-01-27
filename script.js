@@ -226,6 +226,8 @@ $(document).ready(function () {
             }
 
       });
+      //Czyścimy tablice kaw
+      sendCoffeeRequest();
     }
 
     $('#clean').click(CleanCheckbox);
