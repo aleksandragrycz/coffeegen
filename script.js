@@ -20,7 +20,10 @@ $(document).ready(function () {
   // Funkcja wywoływana kiedy użytkownik kliknie w checkboks 
   // dodatku do kawy (np. Bita śmietana).
   function sendCoffeeRequest() {
-    $('#coffees').fadeIn();
+    
+      $('#coffees').siblings().hide();
+      $('#coffees').fadeIn();
+
     // Funkcja, która przyjmuje jako parametr nazwę dodatku,
     // sprawdza czy korespondujący checkbox jest zaznaczony
     // i zwraca true, jeśli jest zaznaczony 
@@ -122,9 +125,7 @@ $(document).ready(function () {
 
           for (var i=0; i < coffeeObject['addons'].length; i++){
           var addon_name = coffeeObject['addons'][i].name;
-          console.log(addon_name);
           var addon_img = $('<img />', {src: 'icons/' + addon_name + '.png', alt: 'ico', title: addons_names[addon_name] + ':  ' + coffeeObject['addons'][i].amount});
-          console.log(addons_names[addon_name]);
           td_addonsList.append(addon_img);
           
       }
@@ -226,10 +227,25 @@ $(document).ready(function () {
             }
 
       });
-      //Czyścimy tablice kaw
-      sendCoffeeRequest();
+      //Czyścimy tablice kaw po odhaczeniu checboxów
     }
 
-    $('#clean').click(CleanCheckbox);
+    //wywołanie funkcji po kliknięciu buttona
+    $('#clean').click(function(){
+      CleanCheckbox();
+      sendCoffeeRequest();
+    });
+
+
+    //Wymiana divów w zależności od akcji
+    function changeDiv(){
+      $('#content div').hide(
+        function(){
+        $('#recipies').fadeIn();
+        CleanCheckbox();
+        });
+    }
+
+    $('#orange').click(changeDiv);
 
 });
