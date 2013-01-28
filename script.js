@@ -238,14 +238,19 @@ $(document).ready(function () {
 
 
     //Wymiana divów w zależności od akcji
-    function changeDiv(){
-      $('#content div').hide(
+    function changeDiv(event){
+      $('#content div:visible').fadeOut(
         function(){
-        $('#recipies').fadeIn();
-        CleanCheckbox();
+        var zmienna = $(event.currentTarget);
+        console.log(zmienna);
+        var dodatkowa = zmienna.attr('id').replace('Button', '');
+        console.log(dodatkowa);
+        var trzecia = $('#' + dodatkowa);
+        trzecia.fadeIn();
+        //CleanCheckbox();
         });
     }
 
-    $('#orange').click(changeDiv);
+    $('.ButtonClick').click(changeDiv);
 
 });

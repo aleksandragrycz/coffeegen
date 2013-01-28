@@ -90,7 +90,7 @@ div#logo {
   z-index: 2;
 }
 
-div#blue {
+div#helpButton {
   background-image: url('blue.png');
   height: 49px;
   width: 59px;
@@ -98,7 +98,7 @@ div#blue {
   float: right;
 }
 
-div#orange {
+div#recipiesButton {
   background-image: url('green.png');
   height: 69px;
   width: 186px;
@@ -106,7 +106,7 @@ div#orange {
   float: right;
 }
 
-div#green {
+div#adviceButton {
   background-image: url('green.png');
   height: 69px;
   width: 186px;
