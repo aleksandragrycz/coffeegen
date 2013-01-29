@@ -1,6 +1,7 @@
 $(document).ready(function () {
 
   // Wczytujemy podstawowe kawy jak tylko strona się wyświetli.
+  var coffeeTable;
   sendCoffeeRequest();
 
   // Najpierw przygotowujemy zmienne przechowujące obiekty jQuery
@@ -15,53 +16,7 @@ $(document).ready(function () {
   var iceCreamCheckbox = $('#icecream');
   var whiskyCheckbox = $('#whisky');
 
-
-
-  // Funkcja wywoływana kiedy użytkownik kliknie w checkboks 
-  // dodatku do kawy (np. Bita śmietana).
-  function sendCoffeeRequest() {
-    
-      $('#coffees').siblings().hide();
-      $('#coffees').fadeIn();
-
-    // Funkcja, która przyjmuje jako parametr nazwę dodatku,
-    // sprawdza czy korespondujący checkbox jest zaznaczony
-    // i zwraca true, jeśli jest zaznaczony 
-    // lub false, jeśli nie jest.
-    function check(addonName) {
-      // Tworzymy selektor dla checkboksa odpowiadającego
-      // nazwie dodatku przekazanej jako parametr funkcji
-      // (np. dla cream mamy #cream).
-      var checkboxSelector = '#' + addonName;
-      // Tworzymy zmienną przechowującą obiekt jQuery 
-      // odnoszący się do danego checkboksa.
-      var checkbox = $(checkboxSelector);
-      // Sprawdzamy czy checkbox posiada atrybut 'checked'.
-      // Jeśli checkbox posiada taki atrybut, będzie to oznaczało,
-      // że checkbox jest zaznaczony. W przeciwnym wypadku,
-      // poniższa zmienna będzie równa 'undefined', co oznacza,
-      // że checkbox nie jest zaznaczony.
-      var checked = checkbox.attr('checked');
-      if (checked !== undefined) {
-        // Checkbox jest zaznaczony.
-        return true;
-      } else {
-        // Checkbox nie jest zaznaczony.
-        return false;
-      }
-    }
-
-    // Funkcja przyjmuje objekt reprezentujący pojedynczą 
-    // kawę, a zwraca objekt jQuery reprezentujący 
-    // pojedynczy element listy w pojemniku na kawy.
-    //
-    // Utworzony element listy ma postać:
-    //
-    // <li id="espresso">
-    //  <div class="image"></div>
-    //  <p>Espresso</p>
-    // </li>
-    function createCoffeeListElement(coffeeObject) {
+function createCoffeeListElement(coffeeObject) {
       // Tworzymy objekt paragrafu, wypełniamy go treścią
       // (nazwą kawy - patrz przykład u góry).
       var p = $('<p></p>');
@@ -103,11 +58,15 @@ $(document).ready(function () {
 
       var p_name = $('<p></p>', {class: 'clickMore'});
       p_name.text(coffeeObject['name']);
+      // Dodajemy obsługę kliknięcia paragrafu z nazwą kawy.
+      p_name.click(showCoffee);
 
       var p_capacity = $('<p></p>');
       p_capacity.text(coffeeObject['capacity'] + ' ml');
 
-      var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + '.png', alt: 'coffee', class: 'clickMore'});
+      var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + '.png', alt: coffeeObject['name'], class: 'clickMore'});
+      // Dodajemy obsługę kliknięcia obrazka
+      img.click(showCoffee);
 
       var td_name = $('<td></td>');
       var td_capacity = $('<td></td>');
@@ -144,12 +103,12 @@ $(document).ready(function () {
       tr.append(td_capacity);
 
       return tr;
-    }
+}
 
-      function createCoffeeView(coffeeObject) {
+ function createCoffeeView(coffeeObject) {
 
       //wkładamy fotke do diva
-      var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + '.jpg', alt: 'coffee'});
+      var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + 'large' + '.png', alt: 'coffee'});
       var picture = $('<div></div>', {id: 'picture'});
       picture.append(img);
 
@@ -215,14 +174,44 @@ $(document).ready(function () {
 
 
       return coffeeView;
+  }
+
+
+
+  // Funkcja wywoływana kiedy użytkownik kliknie w checkboks 
+  // dodatku do kawy (np. Bita śmietana).
+  function sendCoffeeRequest() {
+    
+      $('#coffees').siblings().hide();
+      $('#coffees').fadeIn();
+
+
+    function check(addonName) {
+
+      var checkboxSelector = '#' + addonName;
+
+      var checkbox = $(checkboxSelector);
+
+      var checked = checkbox.attr('checked');
+      if (checked !== undefined) {
+        // Checkbox jest zaznaczony.
+        return true;
+      } else {
+        // Checkbox nie jest zaznaczony.
+        return false;
+      }
     }
+
+    
+     
 
     // Funkcja wykonywana po otrzymaniu odpowiedzi z serwera
     // na żądanie AJAX'owe. Parametr data zawiera dane zwrócone
     // z serwera.
     function gotCoffees(data) {
       // Pobieramy listę kaw otrzymaną z serwera.
-      var coffeeTable = data['result'];
+      coffeeTable = data['result'];
+      console.log(coffeeTable);
 
       // Lista kaw na stronie.
       var table = $('#coffees table');
@@ -256,7 +245,7 @@ $(document).ready(function () {
       hotmilk: check('hotmilk'),
       whisky: check('whisky'),
       lemon: check('lemon')
-    }
+    };
 
     // Wyświetlenie kontrolne w konsoli chrome objektu.
     //console.log(addons);
@@ -319,15 +308,39 @@ $(document).ready(function () {
         });
     }
 
-    function showCoffee(event){
-
+    function showCoffee(event) {
+      
       $('#content div:visible').fadeOut(
-        function(){
+        function () {
+          // Pobieramy kliknięty element
+          var clickedElement = $(event.currentTarget);
+          // Pobieramy nazwę klikniętego elementu 
+          var tagName = clickedElement[0].tagName;
+
+          // Zmienna na nazwę kawy.
+          var coffeeName;
+
+          // Sprawdzamy po nazwie czy kliknęliśmy w img czy w p
+          if (tagName === 'IMG') {
+            // Jeśli to obrazek pobieramy wartość jego atrybutu 'alt'
+            coffeeName = clickedElement.attr('alt');
+          } else {
+            // Jeśli to paragraf, to nazwa kawy znajduje się pomiedzy tagami <p> i </p>
+            coffeeName = clickedElement.text();
+          }
+          console.log(coffeeName);
+          for (var i = 0; i < coffeeTable.length; i++) {
+            if (coffeeTable[i].name === coffeeName) {
+              createCoffeeView(coffeeTable[i]);
+            }
+          }
+
           $('#coffeeView').fadeIn();
         });
     }
 
     $('.ButtonClick').click(changeDiv);
+    
 
 
 
