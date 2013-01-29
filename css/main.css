@@ -185,13 +185,22 @@ div#coffees, div#recipies, div#advice, div#help {
   display: none;
 }
 
+div#coffeeView {
+  margin-top: 30px;
+}
+
 div#picture, div#info {
   display: inline-block;
 }
 
 div#picture {
-  width: 600px;
+  width: 500px;
   margin: 10px;
+
+}
+
+div#info {
+  text-align: top;
 }
 
 div#info ul {
@@ -200,9 +209,24 @@ div#info ul {
 }
 
 div#info li {
-  margin: 10px;
+  margin: 2px;
   border: 1px solid #705039;
   background-image: url('table-bg.jpg');
+  width: 250px;
+}
+
+
+div#info li:nth-child(2){
+  height: 50px;
+}
+
+div#info li p{
+  margin: 15px 10px;
+}
+
+div#recipe {
+  width: 700px;
+  color: #fefefe;
 }
 
 

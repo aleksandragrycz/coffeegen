@@ -108,7 +108,7 @@ function createCoffeeListElement(coffeeObject) {
  function createCoffeeView(coffeeObject) {
 
       //wkładamy fotke do diva
-      var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + 'large' + '.png', alt: 'coffee'});
+      var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + '_big' + '.png', alt: 'coffee'});
       var picture = $('<div></div>', {id: 'picture'});
       picture.append(img);
 
@@ -164,10 +164,10 @@ function createCoffeeListElement(coffeeObject) {
 
       recipe.append(section_recipe);
 
-
+      
       //składamy wszystko w jednego diva
       var coffeeView = $('#coffeeView');
-
+      coffeeView.empty();
       coffeeView.append(picture);
       coffeeView.append(info);
       coffeeView.append(recipe);
@@ -331,6 +331,7 @@ function createCoffeeListElement(coffeeObject) {
           console.log(coffeeName);
           for (var i = 0; i < coffeeTable.length; i++) {
             if (coffeeTable[i].name === coffeeName) {
+              
               createCoffeeView(coffeeTable[i]);
             }
           }
