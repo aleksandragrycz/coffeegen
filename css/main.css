@@ -185,6 +185,26 @@ div#coffees, div#recipies, div#advice, div#help {
   display: none;
 }
 
+div#picture, div#info {
+  display: inline-block;
+}
+
+div#picture {
+  width: 600px;
+  margin: 10px;
+}
+
+div#info ul {
+  color: #fefefe;
+  list-style-type: none;
+}
+
+div#info li {
+  margin: 10px;
+  border: 1px solid #705039;
+  background-image: url('table-bg.jpg');
+}
+
 
 
 /* STOPKA */

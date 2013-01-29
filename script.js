@@ -84,8 +84,7 @@ $(document).ready(function () {
     }
 
 
-      function createCoffeeTableElement(coffeeObject) {
-
+    //Tablica z polskimi tootlipami
       var addons_names = {
         'foam': 'Piana mleczna',
         'steamedmilk': 'Spienione mleko',
@@ -99,13 +98,16 @@ $(document).ready(function () {
         'whisky': 'Whisky'
       };
 
-      var p_name = $('<p></p>');
+      function createCoffeeTableElement(coffeeObject) {
+
+
+      var p_name = $('<p></p>', {class: 'clickMore'});
       p_name.text(coffeeObject['name']);
 
       var p_capacity = $('<p></p>');
       p_capacity.text(coffeeObject['capacity'] + ' ml');
 
-      var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + '.png', alt: 'coffee'});
+      var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + '.png', alt: 'coffee', class: 'clickMore'});
 
       var td_name = $('<td></td>');
       var td_capacity = $('<td></td>');
@@ -121,25 +123,20 @@ $(document).ready(function () {
       //console.log(coffeeObject);
       //console.log(coffeeObject['addons']);
 
-      if (coffeeObject['addons']) {
+        if (coffeeObject['addons']) {
 
-          for (var i=0; i < coffeeObject['addons'].length; i++){
-          var addon_name = coffeeObject['addons'][i].name;
-          var addon_img = $('<img />', {src: 'icons/' + addon_name + '.png', alt: 'ico', title: addons_names[addon_name] + ':  ' + coffeeObject['addons'][i].amount});
-          td_addonsList.append(addon_img);
-          
-      }
-
-
-      
-      //console.log(coffeeObject.addons[i].name);
-      }
+           for (var i=0; i < coffeeObject['addons'].length; i++){
+           var addon_name = coffeeObject['addons'][i].name;
+           var addon_img = $('<img />', {src: 'icons/' + addon_name + '.png', alt: 'ico', title: addons_names[addon_name] + ':  ' + coffeeObject['addons'][i].amount});
+           td_addonsList.append(addon_img);
+          }
+        }
 
 
       td_img.append(img);
       td_name.append(p_name);
       td_capacity.append(p_capacity);
-      //td_addonsList.append(addonsList);
+
 
       tr.append(td_img);
       tr.append(td_name);
@@ -147,6 +144,77 @@ $(document).ready(function () {
       tr.append(td_capacity);
 
       return tr;
+    }
+
+      function createCoffeeView(coffeeObject) {
+
+      //wkładamy fotke do diva
+      var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + '.jpg', alt: 'coffee'});
+      var picture = $('<div></div>', {id: 'picture'});
+      picture.append(img);
+
+
+
+      //wkładamy informacje do info
+      var info = $('<div></div>', {id: 'info'});
+      var info_ul = $('<ul></ul>');
+
+      var p_name = $('<p></p>');
+      p_name.text(coffeeObject['name']);
+
+      var p_capacity = $('<p></p>');
+      p_capacity.text(coffeeObject['capacity'] + ' ml');
+
+
+      var li_name = $('<li></li>');
+      var li_capacity = $('<li></li>');
+      var li_addons = $('<li></li>');
+
+      var bean_img = $('<img />', {src: 'icons/bean.png', alt: 'ico', title: 'Espresso: ' + coffeeObject['espresso']});
+
+      li_addons.append(bean_img);
+       
+
+        if (coffeeObject['addons']) {
+
+            for (var i=0; i < coffeeObject['addons'].length; i++){
+            var addon_name = coffeeObject['addons'][i].name;
+            var addon_img = $('<img />', {src: 'icons/' + addon_name + '.png', alt: 'ico', title: addons_names[addon_name] + ':  ' + coffeeObject['addons'][i].amount});
+            li_addons.append(addon_img); 
+            }
+        }
+
+      li_name.append(p_name);
+      li_capacity.append(p_capacity);
+
+      info_ul.append(li_name);
+      info_ul.append(li_addons);
+      info_ul.append(li_capacity);
+
+      info.append(info_ul);
+
+      //wkładamy przepis do diva
+      var recipe = $('<div></div>', {id: 'recipe'});
+      var section_recipe = $('<section></section>');
+
+          for (var i=0; i < coffeeObject['recipie'].length; i++){
+          var recipe_text = coffeeObject['recipie'][i];
+          var recipe_p = $('<p>' + recipe_text + '</p>');
+          section_recipe.append(recipe_p);
+          }
+
+      recipe.append(section_recipe);
+
+
+      //składamy wszystko w jednego diva
+      var coffeeView = $('#coffeeView');
+
+      coffeeView.append(picture);
+      coffeeView.append(info);
+      coffeeView.append(recipe);
+
+
+      return coffeeView;
     }
 
     // Funkcja wykonywana po otrzymaniu odpowiedzi z serwera
@@ -251,6 +319,16 @@ $(document).ready(function () {
         });
     }
 
+    function showCoffee(event){
+
+      $('#content div:visible').fadeOut(
+        function(){
+          $('#coffeeView').fadeIn();
+        });
+    }
+
     $('.ButtonClick').click(changeDiv);
+
+
 
 });
