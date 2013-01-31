@@ -125,13 +125,16 @@ function createCoffeeListElement(coffeeObject) {
       p_capacity.text(coffeeObject['capacity'] + ' ml');
 
 
-      var li_name = $('<li></li>');
-      var li_capacity = $('<li></li>');
-      var li_addons = $('<li></li>');
+      var li_name = $('<li></li>', {title: 'Nazwa napoju'});
+      var li_capacity = $('<li></li>', {title: 'Sugerowana pojemność filiżanki'});
+      var li_addons = $('<li></li>', {title: 'Składniki napoju'});
 
       var bean_img = $('<img />', {src: 'icons/bean.png', alt: 'ico', title: 'Espresso: ' + coffeeObject['espresso']});
+      var p_bean = $('<p></p>');
+      p_bean.text('Espresso: ' + coffeeObject['espresso']*30 + ' ml');
+      p_bean.prepend(bean_img);
 
-      li_addons.append(bean_img);
+      li_addons.append(p_bean);
        
 
         if (coffeeObject['addons']) {
@@ -139,7 +142,10 @@ function createCoffeeListElement(coffeeObject) {
             for (var i=0; i < coffeeObject['addons'].length; i++){
             var addon_name = coffeeObject['addons'][i].name;
             var addon_img = $('<img />', {src: 'icons/' + addon_name + '.png', alt: 'ico', title: addons_names[addon_name] + ':  ' + coffeeObject['addons'][i].amount});
-            li_addons.append(addon_img); 
+            var addon_p = $('<p></p>');
+            addon_p.text(addons_names[addon_name] + ': ' + coffeeObject['addons'][i].amount);
+            addon_p.prepend(addon_img);
+            li_addons.append(addon_p); 
             }
         }
 
@@ -164,7 +170,7 @@ function createCoffeeListElement(coffeeObject) {
 
       recipe.append(section_recipe);
 
-      
+
       //składamy wszystko w jednego diva
       var coffeeView = $('#coffeeView');
       coffeeView.empty();
@@ -176,14 +182,53 @@ function createCoffeeListElement(coffeeObject) {
       return coffeeView;
   }
 
+    function gotCoffees(data) {
+        
+      var table;
 
+      // Pobieramy listę kaw otrzymaną z serwera.
+      coffeeTable = data['result'];
+      
+
+      // Lista kaw na stronie.
+      table = $('#coffees table');
+      
+      // Ukrywamy wszystkie divy rodzeństwa #coffees
+      $('#content #coffees').siblings().hide();
+      // Pokazujemy samego diva coffees
+      $('#content #coffees').show();
+      
+      
+      // Czyścimy listę kaw na stronie z elementów które tam teraz są.
+      table.empty();
+
+      // Dla każdego obiektu kawy tworzymy element listy <li>
+      // a następnie dodajemy go do listy na stronie.
+      for (var i = 0; i < coffeeTable.length; i++) {
+        var coffee = coffeeTable[i];
+        var coffeeTableElement = createCoffeeTableElement(coffee);
+        coffeeTableElement.hide();
+        table.append(coffeeTableElement);
+        coffeeTableElement.fadeIn('slow');
+      }
+
+    }
+
+  function sendAllCoffeeRequest() {
+    
+    var url = '/all-coffees';
+    $.getJSON(url, gotCoffees);
+    CleanCheckbox();
+    console.log('SEND KOFIE RIQEST')
+
+  }
 
   // Funkcja wywoływana kiedy użytkownik kliknie w checkboks 
   // dodatku do kawy (np. Bita śmietana).
   function sendCoffeeRequest() {
     
-      $('#coffees').siblings().hide();
-      $('#coffees').fadeIn();
+    $('#coffees').siblings().hide();
+    $('#coffees').fadeIn();
 
 
     function check(addonName) {
@@ -208,28 +253,6 @@ function createCoffeeListElement(coffeeObject) {
     // Funkcja wykonywana po otrzymaniu odpowiedzi z serwera
     // na żądanie AJAX'owe. Parametr data zawiera dane zwrócone
     // z serwera.
-    function gotCoffees(data) {
-      // Pobieramy listę kaw otrzymaną z serwera.
-      coffeeTable = data['result'];
-      console.log(coffeeTable);
-
-      // Lista kaw na stronie.
-      var table = $('#coffees table');
-
-      // Czyścimy listę kaw na stronie z elementów które tam teraz są.
-      table.empty();
-
-      // Dla każdego obiektu kawy tworzymy element listy <li>
-      // a następnie dodajemy go do listy na stronie.
-      for (var i = 0; i < coffeeTable.length; i++) {
-        var coffee = coffeeTable[i];
-        var coffeeTableElement = createCoffeeTableElement(coffee);
-        coffeeTableElement.hide();
-        table.append(coffeeTableElement);
-        coffeeTableElement.fadeIn('slow');
-      }
-
-    }
     // Tworzymy objekt, który ostatecznie wyślemy do serwera.
     // Jest to objekt przechowujący elementy postaci 
     // nazwa-dodatku : wartość-logiczna
@@ -259,6 +282,9 @@ function createCoffeeListElement(coffeeObject) {
     $.getJSON(url, addons, gotCoffees);
 
   }
+
+
+
 
   $('#left input').click(sendCoffeeRequest);
 
@@ -331,7 +357,7 @@ function createCoffeeListElement(coffeeObject) {
           console.log(coffeeName);
           for (var i = 0; i < coffeeTable.length; i++) {
             if (coffeeTable[i].name === coffeeName) {
-              
+
               createCoffeeView(coffeeTable[i]);
             }
           }
@@ -340,7 +366,11 @@ function createCoffeeListElement(coffeeObject) {
         });
     }
 
-    $('.ButtonClick').click(changeDiv);
+
+    $('#all-coffeesButton').click(sendAllCoffeeRequest);
+    $('#adviceButton').click(changeDiv);
+    $('#helpButton').click(changeDiv);
+
     
 
 

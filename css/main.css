@@ -98,7 +98,7 @@ div#helpButton {
   float: right;
 }
 
-div#recipiesButton {
+div#all-coffeesButton {
   background-image: url('green.png');
   height: 69px;
   width: 186px;
@@ -181,7 +181,7 @@ table td {
   box-shadow: 2px 2px 2px #319b1d;
 }
 
-div#coffees, div#recipies, div#advice, div#help {
+div#coffees, div#all-coffees, div#advice, div#help {
   display: none;
 }
 
@@ -196,14 +196,16 @@ div#picture, div#info {
 div#picture {
   width: 500px;
   margin: 10px;
+  float: left;
 
 }
 
 div#info {
-  text-align: top;
+  margin-top: 40px;
 }
 
 div#info ul {
+  height: 330px;
   color: #fefefe;
   list-style-type: none;
 }
@@ -213,21 +215,47 @@ div#info li {
   border: 1px solid #705039;
   background-image: url('table-bg.jpg');
   width: 250px;
+  text-shadow: 1px 1px 1px #333;
+}
+
+div#info li:first-child p{
+  font-size: 18px;
+  text-shadow: 2px 2px 2px #333;
 }
 
 
 div#info li:nth-child(2){
-  height: 50px;
+  min-height: 50px;
+  text-align: left;
+  padding: 20px 0;
+}
+
+div#info li:nth-child(2) p{
+  margin: 5px 0;
+  line-height: 15px;
 }
 
 div#info li p{
   margin: 15px 10px;
 }
 
-div#recipe {
-  width: 700px;
-  color: #fefefe;
+div#info img {
+  margin: 0 20px 0 30px;
+  margin-bottom: -6px;
 }
+
+div#info img, p {
+  display: inline-block;
+}
+
+div#recipe {
+  width: 500px;
+  color: #fefefe;
+  clear: left;
+  border: 1px solid #705039;
+  background-image: url('table-bg.jpg');
+}
+
 
 
 

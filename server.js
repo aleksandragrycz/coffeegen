@@ -251,6 +251,28 @@ function serverCallback (request, response) {
 
     });
 
+  } else if (pathname === '/all-coffees') {
+    
+    db.recipies.find(function (error, documents) {
+      var data;
+      
+      if (error) {
+        data = { result: 'error' };
+        return;
+      }
+
+      if (documents.length === 0) {
+        data = { result: false };
+      } else {
+        data = { result: documents };
+      }
+
+      var jsonData = JSON.stringify(data);
+      response.writeHead(200, {'content-type': 'application/json'});
+      response.write(jsonData);
+      response.end();
+    });
+
   } else {
 
     // Pobieramy z URL nazwę pliku za pomocą metody basename z modułu path.
