@@ -254,11 +254,21 @@ div#info img, p {
 }
 
 div#recipe {
-  width: 500px;
+  width: 750px;
   color: #fefefe;
   clear: left;
-  border: 1px solid #705039;
-  background-image: url('table-bg.jpg');
+}
+
+div#recipe section img{
+  display: inline-block;
+  float: left;
+  margin-right: 10px;
+}
+
+div#recipe section p{
+  display: inline-block;
+  margin: 10px 0 20px 50px;
+  text-shadow: 2px 2px 2px #333;
 }
 
 

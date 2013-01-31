@@ -170,7 +170,9 @@ function createCoffeeListElement(coffeeObject) {
 
           for (var i=0; i < coffeeObject['recipie'].length; i++){
           var recipe_text = coffeeObject['recipie'][i];
+          var recipe_img = $('<img />', {src: 'icons/step' + [i+1] + '.png'});
           var recipe_p = $('<p>' + recipe_text + '</p>');
+          recipe_p.prepend(recipe_img);
           section_recipe.append(recipe_p);
           }
 
@@ -315,15 +317,18 @@ function createCoffeeListElement(coffeeObject) {
     //Czyszczenie checkboxów
 
     function CleanCheckbox(){
-      $('#left input').each(function(index, input) {
+      $('#ing-box input').each(function(index, input) {
 
             if ($(input).attr('checked') && !$(input).attr('disabled'))
             {
             $(input).removeAttr('checked');
             }
+            });
 
-      });
-      //Czyścimy tablice kaw po odhaczeniu checboxów
+              $('#size-box input').each(function(index, input){
+                  $(input).attr('checked', 'checked');
+                  console.log("dziala?");
+                });
     }
 
     //wywołanie funkcji po kliknięciu buttona
