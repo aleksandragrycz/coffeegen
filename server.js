@@ -244,7 +244,7 @@ function serverCallback (request, response) {
           // 
           // Przykład: { "addons.name" : "syrop" }
           // ------------------------------------------------------------------------
-          var singleAddonName = { "capacity": addonName };
+          var singleAddonName = { "addons.name": addonName };
 
           // Do listy kryteriów pojemności dodajemy właśnie utworzony obiekt.
           // ------------------------------------------------------------------------
@@ -358,9 +358,9 @@ function serverCallback (request, response) {
 
       // Przekształcamy go na string gotowy do odesłania przeglądarce.
       var jsonData = JSON.stringify(data);
-      // console.log();
-      // console.log('Dane JSON do wysłania:');
-      // console.log(jsonData);
+      console.log();
+      console.log('Dane JSON do wysłania:');
+      console.log(jsonData);
 
 
       // Wysyłamy przeglądarce odpowiedź.
