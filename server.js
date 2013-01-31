@@ -23,7 +23,7 @@ var mongojs = require ('mongojs');
 var databaseName = 'coffees';
 
 // Lista kolekcji z jakich będziemy korzystać.
-var collections = ['recipies'];
+var collections = ['recipes'];
 
 // Obiekt służący do wykonywania zapytań.
 var db = mongojs(databaseName, collections);
@@ -200,8 +200,8 @@ function serverCallback (request, response) {
 
     // Posiadamy teraz obiekt zapytania. 
     // Możemy go śmiało wykorzystać do wydobycia dokumentów 
-    // z bazy danych, z kolekcji recipies.
-    db.recipies.find(query, function (error, documents) {
+    // z bazy danych, z kolekcji recipes.
+    db.recipes.find(query, function (error, documents) {
 
       // Przygotowujemy obiekt JSON.
       var data;
@@ -253,7 +253,7 @@ function serverCallback (request, response) {
 
   } else if (pathname === '/all-coffees') {
     
-    db.recipies.find(function (error, documents) {
+    db.recipes.find(function (error, documents) {
       var data;
       
       if (error) {
