@@ -43,6 +43,7 @@ div#content, nav#left {
 div#content {
   width: 800px;
   margin-left: 200px;
+  padding-bottom: 50px;
 }
 
 nav#top {
@@ -177,6 +178,10 @@ table td {
   background-image: url('table-bg.jpg');
 }
 
+table td:last-child{
+  width: 100px;
+}
+
 .active {
   box-shadow: 2px 2px 2px #319b1d;
 }
@@ -261,7 +266,7 @@ div#recipe {
 
 /* STOPKA */
 footer {
-
+  min-height: 200px;
 }
 
 
