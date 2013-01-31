@@ -16,6 +16,12 @@ $(document).ready(function () {
   var iceCreamCheckbox = $('#icecream');
   var whiskyCheckbox = $('#whisky');
 
+  // Podobnie postępujemy z pojemnościami.
+  var capacity90 = $('#c90');
+  var capacity145 = $('#c145');
+  var capacity160 = $('#c160');
+  var capacity250 = $('#c250');
+
 function createCoffeeListElement(coffeeObject) {
       // Tworzymy objekt paragrafu, wypełniamy go treścią
       // (nazwą kawy - patrz przykład u góry).
@@ -105,7 +111,7 @@ function createCoffeeListElement(coffeeObject) {
       return tr;
 }
 
- function createCoffeeView(coffeeObject) {
+  function createCoffeeView(coffeeObject) {
 
       //wkładamy fotke do diva
       var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + '_big' + '.png', alt: 'coffee'});
@@ -230,14 +236,15 @@ function createCoffeeListElement(coffeeObject) {
     $('#coffees').siblings().hide();
     $('#coffees').fadeIn();
 
+    // criteriaName to wspolna nazwa na addony i pojemnosci
+    function check(criteriaName) {
 
-    function check(addonName) {
-
-      var checkboxSelector = '#' + addonName;
+      var checkboxSelector = '#' + criteriaName;
 
       var checkbox = $(checkboxSelector);
 
       var checked = checkbox.attr('checked');
+
       if (checked !== undefined) {
         // Checkbox jest zaznaczony.
         return true;
@@ -256,30 +263,36 @@ function createCoffeeListElement(coffeeObject) {
     // Tworzymy objekt, który ostatecznie wyślemy do serwera.
     // Jest to objekt przechowujący elementy postaci 
     // nazwa-dodatku : wartość-logiczna
+    // oraz 
+    // nazwa-pojemnosci: wartosc-logiczna
     // gdzie wartość-wartość logiczna to true lub false
     // w zależności od tego, czy checkbox jest zaznaczony czy nie.
-    var addons = {
-      cream: check('cream'),
-      foam:  check('foam'),
-      syrop: check('syrop'),
+    var criteria = {
+      cream:       check('cream'),
+      foam:        check('foam'),
+      syrop:       check('syrop'),
       steamedmilk: check('steamedmilk'),
-      icecream : check('icecream'),
-      chocosyrop: check('chocosyrop'),
-      hotmilk: check('hotmilk'),
-      whisky: check('whisky'),
-      lemon: check('lemon')
+      icecream :   check('icecream'),
+      chocosyrop:  check('chocosyrop'),
+      hotmilk:     check('hotmilk'),
+      whisky:      check('whisky'),
+      lemon:       check('lemon'),
+      capacity90:  check('c90'),
+      capacity145: check('c145'),
+      capacity160: check('c160'),
+      capacity250: check('c250')
     };
 
     // Wyświetlenie kontrolne w konsoli chrome objektu.
-    //console.log(addons);
+    // console.log(criteria);
 
     // URL pod który zostanie wysłane zapytanie AJAX'owe
     // z żądaniem zwrócenia kaw odpowiadających danym 
-    // z objektu addons.
+    // z obiektu criteria.
     var url = '/coffees';
     
 
-    $.getJSON(url, addons, gotCoffees);
+    $.getJSON(url, criteria, gotCoffees);
 
   }
 

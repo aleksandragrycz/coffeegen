@@ -39,10 +39,11 @@ function getContentType(fileName) {
      '.css': 'text/css',
       '.js': 'text/javascript',
      '.ico': 'image/vnd.microsoft.icon',
-    '.html': 'text/html'
+    '.html': 'text/html',
+     '.png': 'image/png'
   }; 
   var extension = path.extname(fileName);
-  console.log('Rozszerzenie pliku: ' + extension);
+  // console.log('Rozszerzenie pliku: ' + extension);
   
   return contentTypes[extension];
 }
@@ -71,7 +72,7 @@ function serverCallback (request, response) {
     } else {
 
       var contentType = getContentType(fileName);
-      console.log('Content-type: ' + contentType);
+      // console.log('Content-type: ' + contentType);
 
       // Jeśli udało się pomyślnie wczytać plik.
       response.writeHead(200, {
@@ -115,95 +116,220 @@ function serverCallback (request, response) {
 
   // Pobieramy URL
   var requestUrl = request.url;
-  console.log('URL: ' + requestUrl);
+  // console.log('URL: ' + requestUrl);
 
   // Pobieramy ścieżkę (tzw. pathname) z URL zapytania.
   var pathname = url.parse(request.url)['pathname'];
-  console.log('Pathname: ' + pathname);
+  // console.log('Pathname: ' + pathname);
 
 
 
-
+  // -------------------------------------------------------------------------------
   // OBSŁUGA ZAPYTAŃ AJAX'owych
-  // --------------------------
+  // -------------------------------------------------------------------------------
   
-  // Czy przyszlo żądanie o kawy.
-  if (pathname === '/coffees') {
-    
-    // Pobieramy z zapytania obiekt z listą dodatków.
-    var addonsObject = url.parse(request.url, true)['query']; 
-    console.log();
-    console.log('Obiekt z dodatkami, przysłany AJAXem');
-    console.log(addonsObject);
 
-    // Przygotowujemy pustą tablicę.
-    // Wypełnimy ją obiektami dodatków.
-    // Listę tą wykorzystamy do wydobycia kaw z bazy danych.
+  // Czy przyszlo żądanie o kawy.
+  if (pathname === '/coffees') 
+  {
+    // Elegancko oddzielamy jedno zapytanie od drugiego za pomocą efektownej linii.
+    // Dzięki temu debugowanie w konsoli staje się przyjemnością.
+    console.log("\n ==============================================================");
+    
+
+    // ------------------------------------------------------------------------------
+    // ETAP POBIERANIA DANYCH Z ZAPYTANIA
+    // ------------------------------------------------------------------------------
+
+
+    // Za pomocą metody parse z modułu url, parsujemy URL i uzyskujemy obiekt,
+    // którego pola zawierają wszystkie informacje o częściach URL.
+    // Dokumentacja modułu url i metody parse znajduje się tutaj: 
+    // http://nodejs.org/api/url.html
+    // ------------------------------------------------------------------------------
+    var urlData = url.parse(request.url, true);
+    
+    // Wyświetlamy powyższy obiekt, uzyskany na drodze parsowania URL.
+    // ------------------------------------------------------------------------------
+    // console.log("\nObiekt urlData - wynik parsowania URL:\n");
+    // console.log(urlData);
+
+    // Spośród wszystkich pól powyższego obiektu, interesuje nas tylko jedno.
+    // Jest to pole query, w którym przechowywany jest obiekt przygotowany 
+    // w skrypcie i przesłany na drodze zapytania Ajaksowego.
+    // ------------------------------------------------------------------------------
+    var criteria = urlData.query; 
+
+    // Wyświetlamy obiekt criteria, niejako odtworzony w postaci takiej, w jakiej 
+    // wysłany został Ajaksem.
+    // ------------------------------------------------------------------------------
+    // console.log("\nObiekt z kryteriami, przysłany Ajaksem:\n");
+    // console.log(criteria);
+
+
+    // ------------------------------------------------------------------------------
+    // ETAP PRZYGOTOWYWANIA ZAPYTANIA
+    // ------------------------------------------------------------------------------
+
+
+    // Przygotowujemy tablicę addonList, którą wypełnimy obiektami postaci:
+    // { "addons.name": nazwa-dodatku }
+    // ------------------------------------------------------------------------------
     var addonList = [];
 
-    // Iterujemy po obiekcie dodatków z URL.
-    for (addon in addonsObject) 
+    // Przygotowujemy też tablicę capacityList, którą wypełnimy obiektami postaci:
+    // { "capacity": pojemnosc }
+    // ------------------------------------------------------------------------------
+    var capacityList = [];
+    
+    // Dla każdego elementu w obiekcie criteria sprawdzamy czy opisuje on kryterium
+    // dodatku czy też kryterium pojemności. Łatwo je rozróżnić, ponieważ nazwy 
+    // kryteriów pojemności zaczynają się od 'capacity'.
+    // W poniższej pętli zmienna 'c' reprezentuje klucz w parze klucz:wartosc
+    // pojedynczego kryterium.
+    // ------------------------------------------------------------------------------
+    for (c in criteria) 
     {
 
-      // Jeśli dodatek ma wartość true (czyli checkboks danego dodatku został zaznaczony),
-      // dodajemy go do listy. 
-      if (addonsObject[addon] === 'true') 
+      // Jeśli nazwa kryterium zaczyna się od 'capacity', to znaczy że kryterium 
+      // dotyczy pojemności, np. 'capacity90'.
+      // ----------------------------------------------------------------------------
+      if (c.substring(0, 8) === 'capacity') 
       {
-        // Budujemy kryterium zapytania do bazy, które czytamy tak:
-        // Znajdź kawę która ma dodatek o nazwie addon.
-        var singleCriterium = {"addons.name": addon};
 
-        // Dodajemy kryterium do listy kryteriów.
-        addonList.push(singleCriterium);
+        // Sprawdzamy, czy dane kryterium ma zostać uwzględnione przy wyszukiwaniu
+        // kaw w bazie danych.
+        // O tym, czy dodajemy dane kryterium do listy czy nie, decyduje 
+        // wartość true lub false, odpowiadająca temu kryterium w obiekcie przysłanym
+        // Ajaksem.
+        // --------------------------------------------------------------------------
+        if (criteria[c] === 'true')
+        {
+
+          // Z nazwy kryterium wydobywamy wartość pojemności.
+          // Przykładowo, z nazwy 'capacity90' wyciągamy '90'.
+          // ------------------------------------------------------------------------
+          var capacityValue = c.replace('capacity', '');
+
+          // Powyższa wartość jest stringiem, a my potrzebujemy liczby.
+          // Poniżej parsujemy string na liczbę w systemie dziesiętnym.
+          // ------------------------------------------------------------------------
+          var capacityValueNumber = parseInt(capacityValue, 10);
+
+          // Do listy kryteriów pojemności dodajemy łańcuch reprezentujący pojemność.
+          // ------------------------------------------------------------------------
+          capacityList.push(capacityValueNumber);
+        }
+
       }
-    }
-    console.log();
-    console.log('Lista dodatków:');
+      // Jeśli nazwa kryterium nie zaczyna się od 'capacity', znaczy to że mamy 
+      // do czynienia z kryterium dotyczącym dodatku do kawy.
+      // ----------------------------------------------------------------------------
+      else 
+      {
+
+        // Nazwa dodatku to klucz danego kryterium.
+        // Przykład: 
+        // syrop: true
+        // --------------------------------------------------------------------------
+        var addonName = c;
+
+        // Jeśli kryterium dodatku do kawy ma zostać uwzględnione w wyszukiwaniu.
+        // --------------------------------------------------------------------------
+        if (criteria[c] === 'true')
+        {
+          // Budujemy obiekt reprezentujący kryterium dodatku zapytania do bazy, 
+          // które czytamy tak: 
+          // "Znajdź kawę, która na liście dodatków ma dodatek o nazwie addonName".
+          // 
+          // Przykład: { "addons.name" : "syrop" }
+          // ------------------------------------------------------------------------
+          var singleAddonName = { "capacity": addonName };
+
+          // Do listy kryteriów pojemności dodajemy właśnie utworzony obiekt.
+          // ------------------------------------------------------------------------
+          addonList.push(singleAddonName);
+        } 
+      }
+
+    } // koniec pętli for
+
+
+    // Kontrolnie wyświetlamy obie listy kryteriów - dla dodatków i pojemności.
+    // ------------------------------------------------------------------------------
+    console.log("\nLista pojemnosci:\n");
+    console.log(capacityList);
+    console.log("Lista dodatków:\n");
     console.log(addonList);
 
+
+    // ------------------------------------------------------------------------------
+    // ETAP BUDOWY ZAPYTANIA
+    // ------------------------------------------------------------------------------
+
+
     // Zwykła, niezobowiązująca deklaracja obiektu zapytania.
+    // ------------------------------------------------------------------------------
     var query;
 
-    // Sprawdzamy, czy lista kryteriów nie jest pusta.
-    // Jeśli będzie pusta, oznacza to, że przychodzące zapytanie
-    // nie posiada żadnych parametrów w URL. A to z kolei oznacza,
-    // że użytkownik nie zaznaczył żadnego checkboksa dodatku.
-    // Ok, jeśli lista ktyteriów jest pusta, konstruujemy zapytanie,
-    // które zwróci te dokumenty (kawy), które nie mają elementu
-    // 'addons'. Wykorzystujemy do tego operator $exists.
+    // Sprawdzamy, czy lista kryteriów dodatków jest puste. Jeśli tak, oznacza to, 
+    // że przychodzące zapytanie nie posiada żadnych parametrów w URL. 
+    // To oznacza, że użytkownik nie zaznaczył żadnego checkboksa dodatku.
+    // W tej sytuacji, zwracamy te kawy, które nie mają elementu 'addons', albo mają
+    // jako dodatek gorącą wodę ('hotwater').
+    // Do sprawdzenia, czy kawa ma klucz 'addons', wykorzystamy operator $exists.
+    // ------------------------------------------------------------------------------
     if (addonList.length === 0) 
     {
+
       query = { 
-        $or: [
-          {
-            addons: { $exists: false }
-          },
-          {
-            "addons.name": 'hotwater'
-          }
-        ]
-        
+        $and: [
+          { $or: [ { addons: { $exists: false } }, { "addons.name": 'hotwater'} ] },
+          { capacity: { $in: capacityList } } 
+        ] 
       };
+
+      // Kontrolnie wyświetlamy utworzony obiekt zapytania.
+      // ----------------------------------------------------------------------------
+      console.log("\nZapytanie: \n");
+      console.log(JSON.stringify(query));
+
     }
     else 
     {
-      // Jeśli na liście kryteriów znajdują się jakieś elementy,
-      // formuujemy zapytanie w inny sposób.
-      // Budujemy zapytanie wykorzystując operator $and i listę kryteriów.
-      // Stosując operator $and, mówimy bazie, żeby zwróciła
-      // kawy, które mają KAŻDY dodatek z listy dodatków.
+      // Jeśli na liście kryteriów dodatków znajdują się jakieś elementy, budujemy 
+      // zapytanie wykorzystując operator $and i listę kryteriów. 
+      // Stosując operator $and, mówimy bazie, żeby zwróciła kawy, które mają KAŻDY 
+      // dodatek z listy dodatków.
       // Innymi słowy np.: I pianę I syrop I jebaną cytrynę.
+      // ----------------------------------------------------------------------------
       query = { 
-        $and: addonList 
+        $and: [
+          { $and: addonList },
+          { capacity: { $in: capacityList }}
+        ]
       };
+
+      // Kontrolnie wyświetlamy utworzony obiekt zapytania.
+      // ----------------------------------------------------------------------------
+      console.log("\nZapytanie: \n");
+      console.log(JSON.stringify(query));
     }
 
+
+    // ------------------------------------------------------------------------------
+    // ETAP WYKONANIA ZAPYTANIA
+    // ------------------------------------------------------------------------------
+
+
     // Posiadamy teraz obiekt zapytania. 
-    // Możemy go śmiało wykorzystać do wydobycia dokumentów 
-    // z bazy danych, z kolekcji recipes.
+    // Wykonujemy więc zapytanie, w odpowiedni sposób obsługując odpowiedź MongoDB,
+    // za pomocą funkcji callbackowej.
+    // ------------------------------------------------------------------------------
     db.recipes.find(query, function (error, documents) {
 
       // Przygotowujemy obiekt JSON.
+      // ----------------------------------------------------------------------------
       var data;
 
 
@@ -217,13 +343,6 @@ function serverCallback (request, response) {
         console.log('Wystąpił błąd zapytania do bazy danych.');
         return;
       } 
-      else 
-      {
-        console.log();
-        console.log('Wyniki zapytania:');
-        console.log(documents);
-      }
-
 
       // Jeśli okazuje się że lista zwroconych kaw jest pusta,
       // zwracamy w odpowiedzi JSON z wartoscia false.
@@ -239,9 +358,9 @@ function serverCallback (request, response) {
 
       // Przekształcamy go na string gotowy do odesłania przeglądarce.
       var jsonData = JSON.stringify(data);
-      console.log();
-      console.log('Dane JSON do wysłania:');
-      console.log(jsonData);
+      // console.log();
+      // console.log('Dane JSON do wysłania:');
+      // console.log(jsonData);
 
 
       // Wysyłamy przeglądarce odpowiedź.
@@ -283,10 +402,11 @@ function serverCallback (request, response) {
     var fileName = requestUrl.substring(1, requestUrl.length);
 
     // Jeśli ścieżką było: / ustalamy, że żądano pliku index.html.
-    if (requestUrl === '/') {
+    if (requestUrl === '/') 
+    {
       fileName = 'index.html';
     }
-    console.log("Nazwa pliku: " + fileName);
+    // console.log("Nazwa pliku: " + fileName);
 
 
 
