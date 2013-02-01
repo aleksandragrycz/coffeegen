@@ -114,8 +114,20 @@ function createCoffeeListElement(coffeeObject) {
   function createCoffeeView(coffeeObject) {
 
       //wkładamy fotke do diva
+      var back = $('<div></div>', {id: 'back', title: 'Wróć do listy napojów kawowych'}).click(
+      function(){
+      console.log("i co?");
+        $('#coffeeView').fadeOut(
+          function(){
+            $('#coffees').fadeIn();
+          });
+      });
+
       var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + '_big' + '.png', alt: 'coffee'});
       var picture = $('<div></div>', {id: 'picture'});
+      picture.append(back);
+
+
       picture.append(img);
 
 
@@ -192,19 +204,54 @@ function createCoffeeListElement(coffeeObject) {
 
     function gotCoffees(data) {
         
-      var table;
 
-      // Pobieramy listę kaw otrzymaną z serwera.
-      coffeeTable = data['result'];
-      
+      var table = $('#coffees table');
+        
+      if (data['result'] === 'error') {
+        console.log('Błąd servera!!');
+        table.empty();
 
-      // Lista kaw na stronie.
-      table = $('#coffees table');
+        var p_error=('<p>Nastąpił błąd serwera. Spróbuj ponownie.</p>');
+
+        var tr_error =$('<tr></tr>');
+        var td_error=$('<td></td>', {id: 'td_false'});
+
+        td_error.append(p_error);
+        tr_error.append(td_error);
+        $('#coffees table').append(tr_error);
+
+        // Ukrywamy wszystkie divy rodzeństwa #coffees
+        $('#content #coffees').siblings().hide();
+        // Pokazujemy samego diva coffees
+        $('#content #coffees').show();
+
+
+      }else if(data['result'] === false){
+        console.log('Nie ma kaw!');
+
+        table.empty();
+
+        var p_false=$('<p>Nie znaleziono napojów kawowych spełniających podane kryteria.</p>');
+        var tr_false =$('<tr></tr>');
+        var td_false=$('<td></td>', {id: 'td_false'});
+
+        td_false.append(p_false);
+        tr_false.append(td_false);
+        $('#coffees table').append(tr_false);
+
+        // Pokazujemy samego diva coffees
+        $('#content #coffees').show();
+
+      }else{
+
+        // Pobieramy listę kaw otrzymaną z serwera.
+        coffeeTable = data['result'];
       
-      // Ukrywamy wszystkie divy rodzeństwa #coffees
-      $('#content #coffees').siblings().hide();
-      // Pokazujemy samego diva coffees
-      $('#content #coffees').show();
+      
+        // Ukrywamy wszystkie divy rodzeństwa #coffees
+        $('#content #coffees').siblings().hide();
+        // Pokazujemy samego diva coffees
+        $('#content #coffees').show();
       
       
       // Czyścimy listę kaw na stronie z elementów które tam teraz są.
@@ -219,6 +266,8 @@ function createCoffeeListElement(coffeeObject) {
         table.append(coffeeTableElement);
         coffeeTableElement.fadeIn('slow');
       }
+      }
+
 
     }
 
@@ -227,8 +276,6 @@ function createCoffeeListElement(coffeeObject) {
     var url = '/all-coffees';
     $.getJSON(url, gotCoffees);
     CleanCheckbox();
-    console.log('SEND KOFIE RIQEST')
-
   }
 
   // Funkcja wywoływana kiedy użytkownik kliknie w checkboks 
@@ -388,6 +435,8 @@ function createCoffeeListElement(coffeeObject) {
     $('#all-coffeesButton').click(sendAllCoffeeRequest);
     $('#adviceButton').click(changeDiv);
     $('#helpButton').click(changeDiv);
+
+
 
     
 

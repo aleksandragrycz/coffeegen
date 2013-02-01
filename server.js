@@ -348,7 +348,7 @@ function serverCallback (request, response) {
       // zwracamy w odpowiedzi JSON z wartoscia false.
       if (documents.length === 0)
       {
-        data = { result: false };
+        data = { result: 'false' };
       }
       else 
       {
@@ -381,7 +381,7 @@ function serverCallback (request, response) {
       }
 
       if (documents.length === 0) {
-        data = { result: false };
+        data = { result: 'false' };
       } else {
         data = { result: documents };
       }
