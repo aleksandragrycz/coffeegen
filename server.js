@@ -1,38 +1,37 @@
-// Najpierw włączamy kilka bibliotek potrzebnych 
-// do wykonania naszego niecnego planu zagłady.
+// Podłączamy biblioteki:
 
-// Moduł http do operowania na zapytaniach i tworzenia obiektu serwera.
+// Moduł http do operowania na zapytaniach i tworzenia obiektu serwera
 var http = require ('http');
 
-// Moduł url do manipulacji danymi w URL'ach.
+// Moduł url do manipulacji danymi w URL'ach
 var url = require ('url');
 
-// Moduł path do pracy ze ścieżkami plików.
+// Moduł path do pracy ze ścieżkami plików
 var path = require ('path');
 
-// Moduł fs (file system) do pracy z wczytywaniem / zapisem plików.
+// Moduł fs (file system) do pracy z wczytywaniem / zapisem plików
 var fs = require ('fs');
 
 // USTAWIENIA POŁĄCZENIA Z BAZĄ DANYCH
 // -----------------------------------
 
-// Moduł połączeń z bazą danych mongo-db.
+// Moduł połączeń z bazą danych mongo-db
 var mongojs = require ('mongojs');
 
-// Nazwa bazy danych.
+// Nazwa bazy danych
 var databaseName = 'coffees';
 
-// Lista kolekcji z jakich będziemy korzystać.
+// Lista kolekcji z jakich będziemy korzystać - aż jedna !
 var collections = ['recipes'];
 
-// Obiekt służący do wykonywania zapytań.
+// Obiekt służący do wykonywania zapytań
 var db = mongojs(databaseName, collections);
 
 
 
 
 
-// Funkcja zwracająca content type na podstawie rozszrerzenia pliku.
+// Funkcja zwracająca content type na podstawie rozszrerzenia pliku
 function getContentType(fileName) {
 
   var contentTypes = {
@@ -48,7 +47,7 @@ function getContentType(fileName) {
   return contentTypes[extension];
 }
 
-// Funkcja obsługująca zapytania z przeglądarki WWW.
+// Funkcja obsługująca zapytania z przeglądarki WWW
 function serverCallback (request, response) {
   
   /*
@@ -65,8 +64,9 @@ function serverCallback (request, response) {
 
     // Sprawdzamy czy wystąpiły błędy
     if (error) {
-      // Wystąpił błąd z wczytaniem pliku.
+      // Wystąpił błąd z wczytaniem pliku
       response.writeHead(500, {'content-type': 'text/html'});
+      //TODO efektowna obsługa błedów
       response.write('<h1>Błąd 500. Wystąpiły błędy we wczytaniu pliku</h1>');
       response.end();
     } else {
@@ -74,7 +74,7 @@ function serverCallback (request, response) {
       var contentType = getContentType(fileName);
       // console.log('Content-type: ' + contentType);
 
-      // Jeśli udało się pomyślnie wczytać plik.
+      // Jeśli udało się pomyślnie wczytać plik:
       response.writeHead(200, {
         'content-type': contentType 
       })
@@ -85,22 +85,23 @@ function serverCallback (request, response) {
 
 
 
-  // Funkcja ładująca pliki z dysku.
+  // Funkcja ładująca pliki z dysku/servera
   // parametry:
   //  fileName - nazwa pliku do wczytania
   function loadFile (fileName) {
     
-    // Sprawdzamy czy plik istnieje.
+    // Sprawdzamy czy plik istnieje
     fs.exists(fileName, function (exists) {
       
-      // Jeśli plik istnieje.
+      // Jeśli plik istnieje
       if (exists) {
-        // Wczytujemy plik o wskazanej nazwie.
+        // Wczytujemy plik
         fs.readFile(fileName, afterRead);
 
       } else {
         response.writeHead(404, {'content-type':'text/html'});
-        // Wysyłamy prosty tekst z informacją ze nie ma żądanego pliku.
+        // Wysyłamy prosty tekst z informacją ze nie ma żądanego pliku
+        //TODO bardzo efektowna obsługa błędu
         response.write('<h1>Błąd 404. Nie ma takiego pliku</h1>');
         response.end();
       }
@@ -109,7 +110,7 @@ function serverCallback (request, response) {
 
   }
 
-  // Wyświetlamy jeden odstęp.
+  // Wyświetlamy jeden odstęp
   console.log();
 
 
@@ -118,7 +119,7 @@ function serverCallback (request, response) {
   var requestUrl = request.url;
   // console.log('URL: ' + requestUrl);
 
-  // Pobieramy ścieżkę (tzw. pathname) z URL zapytania.
+  // Pobieramy ścieżkę z URL zapytania
   var pathname = url.parse(request.url)['pathname'];
   // console.log('Pathname: ' + pathname);
 
@@ -129,11 +130,11 @@ function serverCallback (request, response) {
   // -------------------------------------------------------------------------------
   
 
-  // Czy przyszlo żądanie o kawy.
+  // Czy przyszlo żądanie o kawy
   if (pathname === '/coffees') 
   {
-    // Elegancko oddzielamy jedno zapytanie od drugiego za pomocą efektownej linii.
-    // Dzięki temu debugowanie w konsoli staje się przyjemnością.
+    // Elegancko oddzielamy jedno zapytanie od drugiego za pomocą efektownej linii
+    // Dzięki temu debugowanie w konsoli staje się przyjemnością
     console.log("\n ==============================================================");
     
 
@@ -245,7 +246,7 @@ function serverCallback (request, response) {
           // Przykład: { "addons.name" : "syrop" }
           // ------------------------------------------------------------------------
           var singleAddonName = { "addons.name": addonName };
-
+ 
           // Do listy kryteriów pojemności dodajemy właśnie utworzony obiekt.
           // ------------------------------------------------------------------------
           addonList.push(singleAddonName);

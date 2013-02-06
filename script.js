@@ -1,11 +1,11 @@
 $(document).ready(function () {
 
-  // Wczytujemy podstawowe kawy jak tylko strona się wyświetli.
+
   var coffeeTable;
+  //Wywołanie funkcji po załadowaniu strony (puste zapytanie - podstawowe kawy)
   sendCoffeeRequest();
 
-  // Najpierw przygotowujemy zmienne przechowujące obiekty jQuery
-  // odnoszące się do checkboksów (dodatków do kawy).
+  // Zmienne z dodatkami checkboxów
   var creamCheckbox = $('#cream');
   var foamCheckbox  = $('#foam');
   var syropCheckbox = $('#syrop');
@@ -16,36 +16,14 @@ $(document).ready(function () {
   var iceCreamCheckbox = $('#icecream');
   var whiskyCheckbox = $('#whisky');
 
-  // Podobnie postępujemy z pojemnościami.
+  // Zmienne z pojemnościami checkboxów
   var capacity90 = $('#c90');
   var capacity145 = $('#c145');
   var capacity160 = $('#c160');
   var capacity250 = $('#c250');
 
-function createCoffeeListElement(coffeeObject) {
-      // Tworzymy objekt paragrafu, wypełniamy go treścią
-      // (nazwą kawy - patrz przykład u góry).
-      var p = $('<p></p>');
-      p.text(coffeeObject['name']);
-      // Tworzymy objekt div, ustawiając jako atrybut klasy
-      // wartość 'image' (ponownie - patrz przykład u góry).
-      var div = $('<div></div>', { class: 'image' });
-      // Tworzymy element listy i ustawiamy mu atrybut
-      // id o wartości równej nazwie kawy.
-      var li  = $('<li></li>', { id: coffeeObject['name'] });
-      // Zagnieżdżamy div wewnątrz li.
-      li.append(div);
-      // Zagnieżdżamy p wewnątrz li.
-      li.append(p);
-      // Po serii zagnieżdżeń otrzymujemy taki element jak 
-      // w komentarzu nad funkcją.
 
-      // Zwracamy obiekt elementu listy.
-      return li;
-    }
-
-
-    //Tablica z polskimi tootlipami
+    //Obiekt z polskimi nazwami dodatków
       var addons_names = {
         'foam': 'Piana mleczna',
         'steamedmilk': 'Spienione mleko',
@@ -59,12 +37,14 @@ function createCoffeeListElement(coffeeObject) {
         'whisky': 'Whisky'
       };
 
+      //Funkcja do generowania widoku listy kaw
+
       function createCoffeeTableElement(coffeeObject) {
 
 
       var p_name = $('<p></p>', {class: 'clickMore'});
       p_name.text(coffeeObject['name']);
-      // Dodajemy obsługę kliknięcia paragrafu z nazwą kawy.
+      // Dodajemy obsługę kliknięcia paragrafu z nazwą kawy
       p_name.click(showCoffee);
 
       var p_capacity = $('<p></p>');
@@ -78,15 +58,13 @@ function createCoffeeListElement(coffeeObject) {
       var td_capacity = $('<td></td>');
       var td_img = $('<td></td>');
 
-      //var addonsList = $('<img />', {src: 'icons/' + coffeeObject['addons'] + '.png', alt: 'icon'});
+
       var td_addonsList = $('<td></td>');
       var tr = $('<tr></tr>');
       var bean_img = $('<img />', {src: 'icons/bean.png', alt: 'ico', title: 'Espresso: ' + coffeeObject['espresso']});
 
       td_addonsList.append(bean_img);
-       
-      //console.log(coffeeObject);
-      //console.log(coffeeObject['addons']);
+
 
         if (coffeeObject['addons']) {
 
@@ -111,28 +89,29 @@ function createCoffeeListElement(coffeeObject) {
       return tr;
 }
 
+  //Funkcja generowania widoku pojedynczej kawy
+
   function createCoffeeView(coffeeObject) {
 
-      //wkładamy fotke do diva
+      //Podłączamy funkcję powrotu do widoku tabeli z wynikami wyszukiwania z widoku pojedynczej kawy
       var back = $('<div></div>', {id: 'back', title: 'Wróć do listy napojów kawowych'}).click(
       function(){
-      console.log("i co?");
+      //console.log("Back works!");
         $('#coffeeView').fadeOut(
           function(){
             $('#coffees').fadeIn();
           });
       });
 
+      //----------FOTO----------
+      //Przygotowujemy element img przekształcając nazwę kawy z bazy danych na nazwę odpowiadającą odpowiedniej grafice
       var img = $('<img />', {src: 'cups/' + coffeeObject['name'].replace(/\s/g, '_') + '_big' + '.png', alt: 'coffee'});
       var picture = $('<div></div>', {id: 'picture'});
       picture.append(back);
-
-
       picture.append(img);
 
 
-
-      //wkładamy informacje do info
+      //----------INFO----------
       var info = $('<div></div>', {id: 'info'});
       var info_ul = $('<ul></ul>');
 
@@ -141,7 +120,6 @@ function createCoffeeListElement(coffeeObject) {
 
       var p_capacity = $('<p></p>');
       p_capacity.text(coffeeObject['capacity'] + ' ml');
-
 
       var li_name = $('<li></li>', {title: 'Nazwa napoju'});
       var li_capacity = $('<li></li>', {title: 'Sugerowana pojemność filiżanki'});
@@ -153,7 +131,6 @@ function createCoffeeListElement(coffeeObject) {
       p_bean.prepend(bean_img);
 
       li_addons.append(p_bean);
-       
 
         if (coffeeObject['addons']) {
 
@@ -176,7 +153,7 @@ function createCoffeeListElement(coffeeObject) {
 
       info.append(info_ul);
 
-      //wkładamy przepis do diva
+      //----------PRZEPIS----------
       var recipe = $('<div></div>', {id: 'recipe'});
       var section_recipe = $('<section></section>');
 
@@ -190,23 +167,22 @@ function createCoffeeListElement(coffeeObject) {
 
       recipe.append(section_recipe);
 
-
-      //składamy wszystko w jednego diva
+      //----------ALL IN ONE----------
       var coffeeView = $('#coffeeView');
       coffeeView.empty();
       coffeeView.append(picture);
       coffeeView.append(info);
       coffeeView.append(recipe);
 
-
       return coffeeView;
   }
 
+    //Funkcja interpretująca otrzymaną odpowiedź z servera
     function gotCoffees(data) {
-        
 
       var table = $('#coffees table');
         
+      //Obsługa błędów - błąd servera
       if (data['result'] === 'error') {
         console.log('Błąd servera!!');
         table.empty();
@@ -225,7 +201,7 @@ function createCoffeeListElement(coffeeObject) {
         // Pokazujemy samego diva coffees
         $('#content #coffees').show();
 
-
+      //Obsługa błędów - brak elementów do wyświetlenia (nie spełniają warunków zapytania)
       }else if(data['result'] === false){
         console.log('Nie ma kaw!');
 
@@ -244,7 +220,7 @@ function createCoffeeListElement(coffeeObject) {
 
       }else{
 
-        // Pobieramy listę kaw otrzymaną z serwera.
+        // Pobieramy listę kaw otrzymaną z serwera i przypisujemy do zmiennej coffeeTable
         coffeeTable = data['result'];
       
       
@@ -254,11 +230,10 @@ function createCoffeeListElement(coffeeObject) {
         $('#content #coffees').show();
       
       
-      // Czyścimy listę kaw na stronie z elementów które tam teraz są.
+      // Czyścimy listę kaw na stronie z elementów które tam teraz są (stare zapytania)
       table.empty();
 
-      // Dla każdego obiektu kawy tworzymy element listy <li>
-      // a następnie dodajemy go do listy na stronie.
+      // Pętla do generowania tabeli z kawami (iteracja po każdej kawie)
       for (var i = 0; i < coffeeTable.length; i++) {
         var coffee = coffeeTable[i];
         var coffeeTableElement = createCoffeeTableElement(coffee);
@@ -271,15 +246,16 @@ function createCoffeeListElement(coffeeObject) {
 
     }
 
+  //Funkcja do wysyłania zapytania o wszystkie kawy
   function sendAllCoffeeRequest() {
     
     var url = '/all-coffees';
     $.getJSON(url, gotCoffees);
+    //Czyszczenie checkboxów - bo przechodzimy do widoku wszystkich kaw
     CleanCheckbox();
   }
 
-  // Funkcja wywoływana kiedy użytkownik kliknie w checkboks 
-  // dodatku do kawy (np. Bita śmietana).
+  // Funkcja do wysyłania zapytania (po tym jak użytkownik zaznaczy/odznaczy checkboxa)
   function sendCoffeeRequest() {
     
     $('#coffees').siblings().hide();
@@ -289,33 +265,19 @@ function createCoffeeListElement(coffeeObject) {
     function check(criteriaName) {
 
       var checkboxSelector = '#' + criteriaName;
-
       var checkbox = $(checkboxSelector);
 
       var checked = checkbox.attr('checked');
 
       if (checked !== undefined) {
-        // Checkbox jest zaznaczony.
+        // Checkbox jest zaznaczony
         return true;
       } else {
-        // Checkbox nie jest zaznaczony.
+        // Checkbox nie jest zaznaczony
         return false;
       }
     }
 
-    
-     
-
-    // Funkcja wykonywana po otrzymaniu odpowiedzi z serwera
-    // na żądanie AJAX'owe. Parametr data zawiera dane zwrócone
-    // z serwera.
-    // Tworzymy objekt, który ostatecznie wyślemy do serwera.
-    // Jest to objekt przechowujący elementy postaci 
-    // nazwa-dodatku : wartość-logiczna
-    // oraz 
-    // nazwa-pojemnosci: wartosc-logiczna
-    // gdzie wartość-wartość logiczna to true lub false
-    // w zależności od tego, czy checkbox jest zaznaczony czy nie.
     var criteria = {
       cream:       check('cream'),
       foam:        check('foam'),
@@ -332,12 +294,8 @@ function createCoffeeListElement(coffeeObject) {
       capacity250: check('c250')
     };
 
-    // Wyświetlenie kontrolne w konsoli chrome objektu.
     // console.log(criteria);
 
-    // URL pod który zostanie wysłane zapytanie AJAX'owe
-    // z żądaniem zwrócenia kaw odpowiadających danym 
-    // z obiektu criteria.
     var url = '/coffees';
     
 
@@ -345,24 +303,18 @@ function createCoffeeListElement(coffeeObject) {
 
   }
 
-
-
-
+  //Jeśli użytkownik kliknie(zaznaczy) checkboxa wtedy automatycznie wywoływana jest funkcja
   $('#left input').click(sendCoffeeRequest);
 
-
-  // Moje moje moje moje moje moje moje moje moje
-
-
+  // Śliczna animacja trybika w filiżance z wykorzystaniem dodatku transition
     function Rotation(){ 
           $('#top img').transition({rotate: '80deg'}, 2000);
           $('#top img').transition({rotate: '-10deg'}, 1000);
     }
-
+    //Wywołanie ślicznej funkcji na mouseenter
     $('#top img').mouseenter(Rotation);
 
-    //Czyszczenie checkboxów
-
+    //Funkcja - Czyszczenie checkboxów
     function CleanCheckbox(){
       $('#ing-box input').each(function(index, input) {
 
@@ -378,14 +330,15 @@ function createCoffeeListElement(coffeeObject) {
                 });
     }
 
-    //wywołanie funkcji po kliknięciu buttona
+    //wywołanie funkcji po kliknięciu buttona czyszczenia + wywołanie funkcji endCoffeeRequest żeby lista nie została pusta
     $('#clean').click(function(){
       CleanCheckbox();
       sendCoffeeRequest();
     });
 
 
-    //Wymiana divów w zależności od akcji
+    //Wymiana divów w zależności od akcji - górne menu
+    //TODO optymalizacja funkcji
     function changeDiv(event){
       $('#content div:visible').fadeOut(
         function(){
@@ -399,6 +352,7 @@ function createCoffeeListElement(coffeeObject) {
         });
     }
 
+    //Funkcja wyświetlenia pojedynczej kawy w zależności od wyboru(kliknięcia)
     function showCoffee(event) {
       
       $('#content div:visible').fadeOut(
@@ -407,7 +361,6 @@ function createCoffeeListElement(coffeeObject) {
           var clickedElement = $(event.currentTarget);
           // Pobieramy nazwę klikniętego elementu 
           var tagName = clickedElement[0].tagName;
-
           // Zmienna na nazwę kawy.
           var coffeeName;
 
@@ -416,13 +369,15 @@ function createCoffeeListElement(coffeeObject) {
             // Jeśli to obrazek pobieramy wartość jego atrybutu 'alt'
             coffeeName = clickedElement.attr('alt');
           } else {
-            // Jeśli to paragraf, to nazwa kawy znajduje się pomiedzy tagami <p> i </p>
+            // Jeśli to paragraf, to wyciągamy nazwę
             coffeeName = clickedElement.text();
           }
+
           console.log(coffeeName);
+
+          //Pętla porównująca nazwę klikniętej kawy do aktualnych kaw w tabeli
           for (var i = 0; i < coffeeTable.length; i++) {
             if (coffeeTable[i].name === coffeeName) {
-
               createCoffeeView(coffeeTable[i]);
             }
           }
