@@ -1,40 +1,76 @@
-// Najpierw włączamy kilka bibliotek potrzebnych 
-// do wykonania naszego niecnego planu zagłady.
+// -------------------------------------------------------------------------------------------------
+//   
+//   COFFEEGEN SERWER
+//   
+//   Aplikacja Node.js służąca do serwowania plików statycznych oraz obsługi żądań HTTP
+//   wykonywanych techniką AJAX.
+//   
+// -------------------------------------------------------------------------------------------------
+  
 
-// Moduł http do operowania na zapytaniach i tworzenia obiektu serwera.
-var http = require ('http');
 
-// Moduł url do manipulacji danymi w URL'ach.
+
+// -------------------------------------------------------------------------------------------------
+//    Włączenia niezbędnych standardowych modułów Node.js
+// -------------------------------------------------------------------------------------------------
+
+
+// Moduł http (HTTP) do operowania na żądaniach HTTP i tworzenia obiektu serwera.
+// -------------------------------------------------------------------------------------------------
+var http = require('http');
+
+// Moduł url (URL) do manipulacji danymi w adresach URL.
+// -------------------------------------------------------------------------------------------------
 var url = require ('url');
 
-// Moduł path do pracy ze ścieżkami plików.
+// Moduł path (Path) do pracy ze ścieżkami plików.
+// -------------------------------------------------------------------------------------------------
 var path = require ('path');
 
-// Moduł fs (file system) do pracy z wczytywaniem / zapisem plików.
+// Moduł fs (FileSystem) do pracy z wczytywaniem / zapisem plików.
+// -------------------------------------------------------------------------------------------------
 var fs = require ('fs');
 
-// USTAWIENIA POŁĄCZENIA Z BAZĄ DANYCH
-// -----------------------------------
 
-// Moduł połączeń z bazą danych mongo-db.
+
+
+// -------------------------------------------------------------------------------------------------
+//    Ustawienia połączenia z serwerem bazodanowym MongoDB
+// -------------------------------------------------------------------------------------------------
+
+
+// Włącz moduł mongojs, służący do wykonywania połączeń z bazą danych MongoDB.
+// -------------------------------------------------------------------------------------------------
 var mongojs = require ('mongojs');
 
-// Nazwa bazy danych.
+// Ustalamy nazwę bazy danych, do której będziemy wykonywać zapytania.
+// -------------------------------------------------------------------------------------------------
 var databaseName = 'coffees';
 
-// Lista kolekcji z jakich będziemy korzystać.
+// Ustalamy listę kolekcji z jakich będziemy wydobywać dokumenty (kawy).
+// W przypadku aplikacji CoffeeGen jest to tylko jedna kolekcja 'recipes'.
+// -------------------------------------------------------------------------------------------------
 var collections = ['recipes'];
 
-// Obiekt służący do wykonywania zapytań.
+// Tworzymy obiekt służący do wykonywania zapytań za pomocą modułu mongojs oraz ustawień
+// sporządzonych powyżej.
+// -------------------------------------------------------------------------------------------------
 var db = mongojs(databaseName, collections);
 
 
 
 
+// -------------------------------------------------------------------------------------------------
+//    Definicje funkcji wykorzystywanych w aplikacji
+// -------------------------------------------------------------------------------------------------
 
-// Funkcja zwracająca content type na podstawie rozszrerzenia pliku.
-function getContentType(fileName) {
 
+
+// Funkcja zwracająca typ treści (Content-Type) na podstawie rozszrerzenia pliku.
+// -------------------------------------------------------------------------------------------------
+function getContentType(fileName) 
+{
+  // Obiekt, którego elementami są pary postaci rozszerzenie:content-type.
   var contentTypes = {
      '.css': 'text/css',
       '.js': 'text/javascript',
@@ -42,79 +78,27 @@ function getContentType(fileName) {
     '.html': 'text/html',
      '.png': 'image/png'
   }; 
+
+  // Wyznaczamy rozszerzenie pliku, wyłuskując je z nazwy pliku.
   var extension = path.extname(fileName);
-  // console.log('Rozszerzenie pliku: ' + extension);
-  
+
+  // Zwracamy content-type odpowiadający wyłuskanemu z nazwy pliku rozszerzeniu.
   return contentTypes[extension];
 }
 
-// Funkcja obsługująca zapytania z przeglądarki WWW.
-function serverCallback (request, response) {
-  
-  /*
-   *
-   *  DEFINICJE FUNKCJI 
-   * 
-   */
-
-  // Funkcja wywoływana po wczytaniu pliku do pamięci.
-  // parametry:
-  //   error - boolean zawierający informację czy przy wczytaniu był błąd
-  //   contents - treść wczytanego pliku
-  function afterRead (error, contents) {
-
-    // Sprawdzamy czy wystąpiły błędy
-    if (error) {
-      // Wystąpił błąd z wczytaniem pliku.
-      response.writeHead(500, {'content-type': 'text/html'});
-      response.write('<h1>Błąd 500. Wystąpiły błędy we wczytaniu pliku</h1>');
-      response.end();
-    } else {
-
-      var contentType = getContentType(fileName);
-      // console.log('Content-type: ' + contentType);
-
-      // Jeśli udało się pomyślnie wczytać plik.
-      response.writeHead(200, {
-        'content-type': contentType 
-      })
-      response.write(contents);
-      response.end();
-    }
-  }
 
 
+// Funkcja obsługująca żądania z przeglądarki WWW.
+// Funkcja przyjmuje dwa argumenty: request - czyli obiekt żądania i response - obiekt odpowiedzi.
+// -------------------------------------------------------------------------------------------------
+function serverCallback (request, response) 
+{
 
-  // Funkcja ładująca pliki z dysku.
-  // parametry:
-  //  fileName - nazwa pliku do wczytania
-  function loadFile (fileName) {
-    
-    // Sprawdzamy czy plik istnieje.
-    fs.exists(fileName, function (exists) {
-      
-      // Jeśli plik istnieje.
-      if (exists) {
-        // Wczytujemy plik o wskazanej nazwie.
-        fs.readFile(fileName, afterRead);
-
-      } else {
-        response.writeHead(404, {'content-type':'text/html'});
-        // Wysyłamy prosty tekst z informacją ze nie ma żądanego pliku.
-        response.write('<h1>Błąd 404. Nie ma takiego pliku</h1>');
-        response.end();
-      }
-
-    });
-
-  }
-
-  // Wyświetlamy jeden odstęp.
-  console.log();
+  //    START
+  // -----------------------------------------------------------------------------------------------
 
 
-
-  // Pobieramy URL
+  // Z obiektu request wczytujemy url.
   var requestUrl = request.url;
   // console.log('URL: ' + requestUrl);
 
@@ -348,7 +332,7 @@ function serverCallback (request, response) {
       // zwracamy w odpowiedzi JSON z wartoscia false.
       if (documents.length === 0)
       {
-        data = { result: 'false' };
+        data = { result: false };
       }
       else 
       {
@@ -381,7 +365,7 @@ function serverCallback (request, response) {
       }
 
       if (documents.length === 0) {
-        data = { result: 'false' };
+        data = { result: false };
       } else {
         data = { result: documents };
       }
@@ -413,6 +397,67 @@ function serverCallback (request, response) {
     // Teraz możemy radośnie załadować nasz plik.
     loadFile(fileName);
 
+  }
+
+
+
+  // Funkcja wywoływana po wczytaniu pliku do pamięci.
+  // Przyjmuje dwa argumenty:
+  //   1. error - jeśli wystąpił błąd z wczytaniem pliku, będzie to obiekt z danymi błędu,
+  //              jeśli błąd nie wystąpił będzie to null.
+  //   2. contents - treść wczytanego pliku.
+  // -----------------------------------------------------------------------------------------------
+  function handleData (error, contents) 
+  {
+
+    // Jeśli wystąpił błąd z wczytaniem pliku. 
+    if (error) 
+    {
+      // Wysyłamy odpowiedź z błędem 500 - błędem w działaniu serwera.
+      response.writeHead(500, {'content-type': 'text/html'});
+      response.write('<h1>Błąd 500. Wystąpiły błędy we wczytaniu pliku</h1>');
+      response.end();
+    }
+    // Jeśli nie wystąpiły żadne błędy i udało się pomyślnie wczytać treść pliku. 
+    else 
+    {
+      // Wykorzystując funkcję getContentType, ustalamy content-type żądanego pliku.
+      var contentType = getContentType(fileName);
+
+      // Jeśli udało się pomyślnie wczytać plik, wysyłamy jego treść w odpowiedzi
+      // do przeglądarki wraz ze statusem 200 (OK).
+      response.writeHead(200, { 'content-type': contentType });
+      response.write(contents);
+      response.end();
+    }
+
+  }
+
+
+  // Funkcja służąca do ładowania pliku z dysku.
+  // Przyjmuje jeden argument - fileName - nazwę pliku do wczytania.
+  // -----------------------------------------------------------------------------------------------
+  function loadFile (fileName) 
+  {
+    // Sprawdzamy czy plik istnieje.
+    // Jeśli istnieje do callbacku będzie przekazane true, jeśli nie - false.
+    fs.exists(fileName, function (exists) 
+    {
+      // Jeśli plik istnieje, wczytaj plik o podanej nazwie.
+      if (exists) 
+      {
+        // Po wczytaniu pliku, wykonaj funkcję 'handleData'.
+        fs.readFile(fileName, handleData);
+      } 
+      // Jeśli plik nie istnieje, zwróć przeglądarce odpowiedź 404 - Nie znaleziono pliku.
+      else 
+      {
+        response.writeHead(404, { 'content-type':'text/html' });
+        // Wysyłamy prosty tekst z informacją ze nie ma żądanego pliku.
+        response.write('<h1>Błąd 404. Nie ma takiego pliku</h1>');
+        response.end();
+      }
+    });
   }
 
 }
