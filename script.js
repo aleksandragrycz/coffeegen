@@ -386,15 +386,8 @@ $(document).ready(function () {
         });
     }
 
-
     $('#all-coffeesButton').click(sendAllCoffeeRequest);
     $('#adviceButton').click(changeDiv);
     $('#helpButton').click(changeDiv);
-
-
-
-    
-
-
 
 });
